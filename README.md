@@ -1,3 +1,5 @@
+# Mid-term
+72230238 장원서
 # Introduction
 ### Learning Transferable Visual Models From Natural Language Supervision, CLIP
 ![Clip](https://github.com/iljf/Assignment_CLIP/assets/94291960/78e0f6a9-0a76-4dd1-a3cf-71d86e73770a)
