@@ -109,7 +109,7 @@ With model, image_embeddings, and text query; It displays the most relevant imag
 ```
 find_matches(model, 
              image_embeddings,
-             query="one dog sitting on the grass",
+             query="dogs on the grass",
              image_filenames=valid_df['image'].values,
              n=9)
 ```
