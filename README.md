@@ -15,7 +15,7 @@ Unlike traditional models that are typically trained on either text or image dat
 - Text encoder  : Transformer as a base size, 63M-parameter 12-layer 512-wide model with 8 attention heads
 - All models are trained for 32 epochs. A very large minibatch size of 32,768 is used. Mixed-Precision Training. The calculation of embedding similarities was also sharded with individual GPUs
  
-The resulting model can then be used for a wide range of tasks that require understanding and processing of both images and text. For example, given an image, Clip can generate textual descriptions or classify it into categories. Conversely, given a text prompt, Clip can retrieve relevant images or rank a set of images based on their relevance to the text.
+CLIP can be used for a wide range of tasks that require understanding and processing of both images and text. For example, given an image, Clip can generate textual descriptions or classify it into categories. Conversely, given a text prompt, Clip can retrieve relevant images or rank a set of images based on their relevance to the text.
 
 ### Pseudocode
 ```
