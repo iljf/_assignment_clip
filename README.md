@@ -58,3 +58,10 @@ loss   = (loss_i + loss_t) /2
 ```
 pip install -r requirements.txt
 ```
+- Datasets Flicker-8k, https://www.kaggle.com/datasets/adityajn105/flickr8k
+  - After downloading the datasets, resave captions.txt to captions.csv
+  - in config.py, change the image path and captions path to your dataset location
+```
+image_path = "C:/Users/wlwrl/PycharmProjects/Assignment_CLIP/Datasets/Flicker-8k/Images"
+captions_path = "C:/Users/wlwrl/PycharmProjects/Assignment_CLIP/Datasets/Flicker-8k"
+```
