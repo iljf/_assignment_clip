@@ -65,3 +65,42 @@ pip install -r requirements.txt
 image_path = "C:/Users/wlwrl/PycharmProjects/Assignment_CLIP/Datasets/Flicker-8k/Images"
 captions_path = "C:/Users/wlwrl/PycharmProjects/Assignment_CLIP/Datasets/Flicker-8k"
 ```
+
+# Run
+- For traning process, simply run 'main.py'
+- For inference, run 'inference.py'
+
+### Models
+
+ResNet50 For Image-encoder, DistiLBERT as text-encoder
+```
+model_name = 'resnet50'
+image_embedding = 2048
+text_encoder_model = "distilbert-base-uncased"
+text_embedding = 768
+text_tokenizer = "distilbert-base-uncased"
+max_length = 200
+```
+For projection head, used for both image and text encoders
+```
+num_projection_layers = 1
+projection_dim = 256
+dropout = 0.1
+Used parameters
+```
+
+Used parameters
+```
+batch_size = 32
+num_workers = 4
+head_lr = 1e-3
+image_encoder_lr = 1e-4
+text_encoder_lr = 1e-5
+weight_decay = 1e-3
+patience = 1
+factor = 0.8
+epochs = 1
+```
+
+### Inference
+With model, image_embeddings, and text query; It displays the most relevant images from the validation set
