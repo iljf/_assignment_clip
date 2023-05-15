@@ -104,3 +104,12 @@ epochs = 1
 
 ### Inference
 With model, image_embeddings, and text query; It displays the most relevant images from the validation set
+```
+find_matches(model, 
+             image_embeddings,
+             query="one dog sitting on the grass",
+             image_filenames=valid_df['image'].values,
+             n=9)
+```
+![Figure_1](https://github.com/iljf/Assignment_CLIP/assets/94291960/098f6e20-3a02-40f8-9fe8-184ed951267e)
+
