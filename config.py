@@ -1,7 +1,7 @@
 import torch
 
 debug = False
-image_path = "Datasets/Flicker-8k/Images"
+image_path = "Datasets/Flicker-8k/Images/no_label"
 captions_path = "Datasets/Flicker-8k"
 batch_size = 32
 num_workers = 4

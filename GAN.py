@@ -7,8 +7,10 @@ from PIL import Image
 import glob
 import os
 import config as CFG
+import torchvision.utils as vutils
+from torchvision.datasets import ImageFolder
+import cv2
 
-# Generator model
 class Generator(nn.Module):
     def __init__(self, latent_dim):
         super(Generator, self).__init__()
@@ -32,7 +34,6 @@ class Generator(nn.Module):
         out = out.view(-1, 3, 64, 64)
         return out
 
-# Discriminator model
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
@@ -55,66 +56,56 @@ class Discriminator(nn.Module):
         out = self.sigmoid(out)
         return out
 
-# Custom dataset class
-class Flickr8kDataset(Dataset):
+class GANDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        self.image_paths = CFG.image_path
+        self.image_paths = glob.glob(os.path.join(root_dir, '*.jpg'))
 
     def __len__(self):
         return len(self.image_paths)
 
     def __getitem__(self, index):
         image_path = self.image_paths[index]
-        image = Image.open(CFG.image_path).convert('RGB')
+        image = Image.open(image_path).convert('RGB')
         if self.transform:
             image = self.transform(image)
         return image
 
-# Hyperparameters
 batch_size = 64
 latent_dim = 100
 num_epochs = 50
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Transformations for the dataset
 transform = transforms.Compose([
     transforms.Resize((64, 64)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 ])
 
-# Load the dataset
-dataset = Flickr8kDataset('path_to_dataset_folder', transform=transform)
+dataset = GANDataset('Datasets/Flicker-8k/Images/no_label', transform=transform)
 dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
-# Initialize the generator and discriminator
 generator = Generator(latent_dim).to(device)
 discriminator = Discriminator().to(device)
 
-# Binary cross-entropy loss and optimizers
 criterion = nn.BCELoss()
 generator_optimizer = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 discriminator_optimizer = optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
 
-# Training loop
 for epoch in range(num_epochs):
-    for i, images in enumerate(dataloader):
-        real_images = images.to(device)
+    for i, image in enumerate(dataloader):
+        real_images = image.to(device)
         batch_size = real_images.size(0)
 
-        # Train discriminator
         discriminator.zero_grad()
         real_labels = torch.ones(batch_size, 1).to(device)
         fake_labels = torch.zeros(batch_size, 1).to(device)
 
-        # Real images
         real_outputs = discriminator(real_images)
         d_loss_real = criterion(real_outputs, real_labels)
         d_loss_real.backward()
 
-        # Fake images
         z = torch.randn(batch_size, latent_dim).to(device)
         fake_images = generator(z)
         fake_outputs = discriminator(fake_images.detach())
@@ -124,19 +115,47 @@ for epoch in range(num_epochs):
         discriminator_loss = d_loss_real + d_loss_fake
         discriminator_optimizer.step()
 
-        # Train generator
         generator.zero_grad()
         outputs = discriminator(fake_images)
         generator_loss = criterion(outputs, real_labels)
         generator_loss.backward()
         generator_optimizer.step()
 
-        # Print losses
         if (i + 1) % 10 == 0:
             print(f'Epoch [{epoch + 1}/{num_epochs}], Step [{i + 1}/{len(dataloader)}], '
                   f'Discriminator Loss: {discriminator_loss.item():.4f}, '
                   f'Generator Loss: {generator_loss.item():.4f}')
 
-# Save the trained models
 torch.save(generator.state_dict(), 'generator.pth')
 torch.save(discriminator.state_dict(), 'discriminator.pth')
+
+if CFG.pretrained:
+    generator.load_state_dict(torch.load('generator.pth'))
+else:
+    generator.apply(weights_init)
+
+generator.eval()
+
+data_transforms = transforms.Compose([
+    transforms.Resize(CFG.size),
+    transforms.CenterCrop(CFG.size),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+])
+
+original_dataset = ImageFolder(root='Datasets/Flicker-8k/Images', transform=data_transforms)
+original_dataloader = DataLoader(original_dataset, batch_size=batch_size, shuffle=True, num_workers=CFG.num_workers)
+
+augmented_images = []
+
+with torch.no_grad():
+    for batch_idx, (images, _) in enumerate(original_dataloader):
+        images = images.to(device)
+        generated_images = generator(images)
+        augmented_images.append(generated_images.cpu())
+
+
+augmented_images = torch.cat(augmented_images, dim=0)
+vutils.save_image(augmented_images, 'augmented_images.png', normalize=True)
+
+print("Augmented images saved successfully!")

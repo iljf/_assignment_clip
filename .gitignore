@@ -1,2 +1,4 @@
 /best.pt
 /Datasets/
+/discriminator.pth
+/generator.pth
