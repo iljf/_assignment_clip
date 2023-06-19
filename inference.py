@@ -67,6 +67,6 @@ if __name__ == "__main__":
     model, image_embeddings = get_image_embeddings(valid_df, "best.pt")
     find_matches(model,
                  image_embeddings,
-                 query="dogs on the grass",
+                 query="two dogs on the grass",
                  image_filenames=valid_df['image'].values,
                  n=9)

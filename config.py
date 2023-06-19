@@ -1,8 +1,8 @@
 import torch
 
 debug = False
-image_path = "C:/Users/wlwrl/PycharmProjects/_assignment_CLIP/Datasets/Flicker-8k/Images"
-captions_path = "C:/Users/wlwrl/PycharmProjects/_assignment_CLIP/Datasets/Flicker-8k"
+image_path = "Datasets/Flicker-8k/Images"
+captions_path = "Datasets/Flicker-8k"
 batch_size = 32
 num_workers = 4
 head_lr = 1e-3
@@ -11,7 +11,7 @@ text_encoder_lr = 1e-5
 weight_decay = 1e-3
 patience = 1
 factor = 0.8
-epochs = 1
+epochs = 32
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 model_name = 'resnet50'

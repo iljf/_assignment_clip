@@ -5,15 +5,8 @@ import albumentations as A
 
 import config as CFG
 
-
 class CLIPDataset(torch.utils.data.Dataset):
     def __init__(self, image_filenames, captions, tokenizer, transforms):
-        """
-        image_filenames and cpations must have the same length; so, if there are
-        multiple captions for each image, the image_filenames must have repetitive
-        file names 
-        """
-
         self.image_filenames = image_filenames
         self.captions = list(captions)
         self.encoded_captions = tokenizer(
